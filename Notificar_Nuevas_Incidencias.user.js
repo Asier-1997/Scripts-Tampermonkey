@@ -2,16 +2,23 @@
 // @name         Notificador de Nuevas Incidencias ITSM
 // @namespace    http://tampermonkey.net/
 // @author       Asier
-// @version      1.0.0
+// @version      1.0.1
 // @description  Lanza una notificación emergente cuando aparece una nueva incidencia en ITSM
-// @match        https://itsm.mecalux.com/pages/UI.php?*
-// @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/notificador-itop.user.js
-// @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/notificador-itop.user.js
+// @match        https://itsm.mecalux.com/pages/UI.php*
+// @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
+// @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
 // @grant        GM_notification
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    // 1. Verificar si estamos exactamente en la vista "IncidentsDispatchedToMyTeams"
+    // Si la URL no contiene esta vista específica, detiene la ejecución del script aquí.
+    if (!window.location.href.includes('Incident%3AIncidentsDispatchedToMyTeams') && 
+        !window.location.href.includes('Incident:IncidentsDispatchedToMyTeams')) {
+        return;
+    }
 
     // Intervalo de comprobación en milisegundos (30000 = 30 segundos)
     const INTERVALO_CHECK = 30000;
@@ -39,7 +46,7 @@
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("🚨 ¡Nueva Incidencia Detectada!", {
                     body: `${idActual}: ${tituloIncidencia}`,
-                    icon: 'https://www.google.com/s2/favicons?domain=itop'
+                    icon: 'https://www.google.com/s2/favicons?domain=itsm.mecalux.com'
                 });
             } else {
                 alert(`🚨 ¡Nueva Incidencia Detectada!\n\nID: ${idActual}`);
@@ -56,15 +63,18 @@
     // Comprobar la primera vez tras 3 segundos
     setTimeout(comprobarNuevasIncidencias, 3000);
 
-    // Refrescar la página o la tabla cada X tiempo
+    // Refrescar únicamente cuando estemos en esta pantalla
     setInterval(() => {
-        // Si iTop tiene botón de refresco interno en la tabla
+        // Doble verificación por si el usuario cambió de sección sin recargar toda la página
+        if (!window.location.href.includes('IncidentsDispatchedToMyTeams')) {
+            return;
+        }
+
         const btnRefresco = document.querySelector('button.fa-sync, .fa-refresh, [title*="Refresh"]');
         if (btnRefresco) {
             btnRefresco.click();
             setTimeout(comprobarNuevasIncidencias, 2000);
         } else {
-            // Si no hay botón de refresco AJAX, recargamos la página completa
             comprobarNuevasIncidencias();
             location.reload();
         }
