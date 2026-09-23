@@ -2,7 +2,7 @@
 // @name         Notificador de Nuevas Incidencias ITSM
 // @namespace    http://tampermonkey.net/
 // @author       Asier
-// @version      1.0.1
+// @version      1.0.2
 // @description  Lanza una notificación emergente cuando aparece una nueva incidencia en ITSM
 // @match        https://itsm.mecalux.com/pages/UI.php*
 // @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
@@ -13,12 +13,17 @@
 (function() {
     'use strict';
 
-    // 1. Verificar si estamos exactamente en la vista "IncidentsDispatchedToMyTeams"
-    // Si la URL no contiene esta vista específica, detiene la ejecución del script aquí.
-    if (!window.location.href.includes('Incident%3AIncidentsDispatchedToMyTeams') && 
-        !window.location.href.includes('Incident:IncidentsDispatchedToMyTeams')) {
+    // Función para verificar si estamos en la vista de incidencias por el título de la página
+    function esPaginaCorrecta() {
+        return document.title.toLowerCase().includes('open incidents dispatched to one of my teams');
+    }
+
+    // Si no estamos en esa vista exacta, detiene la ejecución del script aquí
+    if (!esPaginaCorrecta()) {
         return;
     }
+
+    console.log("🚀 Notificador iTop: Activado en la vista de incidencias del equipo.");
 
     // Intervalo de comprobación en milisegundos (30000 = 30 segundos)
     const INTERVALO_CHECK = 30000;
@@ -63,12 +68,14 @@
     // Comprobar la primera vez tras 3 segundos
     setTimeout(comprobarNuevasIncidencias, 3000);
 
-    // Refrescar únicamente cuando estemos en esta pantalla
+    // Refrescar únicamente cuando sigamos en esta pantalla
     setInterval(() => {
-        // Doble verificación por si el usuario cambió de sección sin recargar toda la página
-        if (!window.location.href.includes('IncidentsDispatchedToMyTeams')) {
+        // Si te has movido a otra pestaña dentro de iTop (como un ticket individual), no refresca
+        if (!esPaginaCorrecta()) {
             return;
         }
+
+        console.log("⏱️ iTop Notifier: Ejecutando comprobación...");
 
         const btnRefresco = document.querySelector('button.fa-sync, .fa-refresh, [title*="Refresh"]');
         if (btnRefresco) {
