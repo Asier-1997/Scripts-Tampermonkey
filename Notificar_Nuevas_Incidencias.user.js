@@ -1,16 +1,19 @@
 // ==UserScript==
-// @name         Notificador de Nuevas Incidencias iTop
+// @name         Notificador de Nuevas Incidencias ITSM
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Lanza una notificación cuando aparece una nueva incidencia en la lista
-// @match        https://itsm.mecalux.com/pages/UI.php?c%5Bmenu%5D=Incident%3AIncidentsDispatchedToMyTeams  // <-- Cambia esto por la URL de tu iTop
+// @author       Asier
+// @version      1.0.0
+// @description  Lanza una notificación emergente cuando aparece una nueva incidencia en ITSM
+// @match        https://itsm.mecalux.com/pages/UI.php?*
+// @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/notificador-itop.user.js
+// @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/notificador-itop.user.js
 // @grant        GM_notification
 // ==/UserScript==
 
 (function() {
-    'use me strict';
+    'use strict';
 
-    // Intervalo de comprobación en milisegundos (ej. 30000 = 30 segundos)
+    // Intervalo de comprobación en milisegundos (30000 = 30 segundos)
     const INTERVALO_CHECK = 30000;
 
     function solicitarPermisoNotificaciones() {
@@ -50,12 +53,12 @@
     // Solicitar permiso de notificaciones al cargar
     solicitarPermisoNotificaciones();
 
-    // Comprobar la primera vez
+    // Comprobar la primera vez tras 3 segundos
     setTimeout(comprobarNuevasIncidencias, 3000);
 
     // Refrescar la página o la tabla cada X tiempo
     setInterval(() => {
-        // Si iTop tiene botón de refresco interno en la tabla (icono de recarga arriba a la derecha):
+        // Si iTop tiene botón de refresco interno en la tabla
         const btnRefresco = document.querySelector('button.fa-sync, .fa-refresh, [title*="Refresh"]');
         if (btnRefresco) {
             btnRefresco.click();
@@ -67,19 +70,4 @@
         }
     }, INTERVALO_CHECK);
 
-})();// ==UserScript==
-// @name         New Userscript
-// @namespace    http://tampermonkey.net/
-// @version      2026-09-23
-// @description  try to take over the world!
-// @author       You
-// @match        https://itsm.mecalux.com/pages/UI.php?c%5Bmenu%5D=Incident%3AIncidentsDispatchedToMyTeams
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=mecalux.com
-// @grant        none
-// ==/UserScript==
-
-(function() {
-    'use strict';
-
-    // Your code here...
 })();
