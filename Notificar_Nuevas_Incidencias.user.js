@@ -2,11 +2,11 @@
 // @name         Notificador de Nuevas Incidencias iTop
 // @namespace    http://tampermonkey.net/
 // @author       Asier
-// @version      1.0.4
+// @version      1.0.5
 // @description  Notifica si la primera incidencia de la lista tiene una Start Date muy reciente mostrando Organización y Título.
 // @match        https://itsm.mecalux.com/pages/UI.php*
-// @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/Notificar_Nuevas_Incidencias.user.js
-// @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/Notificar_Nuevas_Incidencias.user.js
+// @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
+// @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
 // @grant        GM_notification
 // ==/UserScript==
 
