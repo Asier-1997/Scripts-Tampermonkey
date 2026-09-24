@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Notificador de Nuevas Incidencias iTop
+// @name         Notificador de Nuevas Incidencias ITSM
 // @namespace    http://tampermonkey.net/
 // @author       Asier
-// @version      1.0.5
-// @description  Notifica si la primera incidencia de la lista tiene una Start Date muy reciente mostrando Organización y Título.
+// @version      1.0.6
+// @description  Notifica la nueva incidencia mostrando Organización y Título.
 // @match        https://itsm.mecalux.com/pages/UI.php*
 // @updateURL    https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
 // @downloadURL  https://raw.githubusercontent.com/Asier-1997/Scripts-Tampermonkey/main/Notificar_Nuevas_Incidencias.user.js
@@ -17,13 +17,11 @@
         return document.title.toLowerCase().includes('open incidents dispatched to one of my teams');
     }
 
-    if (!esPaginaCorrecta()) {
-        return;
-    }
+    if (!esPaginaCorrecta()) return;
 
-    console.log("🚀 Notificador iTop 1.0.4: Activado en la vista de incidencias.");
+    console.log("🚀 Notificador iTop 1.0.5: Activado en la vista de incidencias.");
 
-    const INTERVALO_CHECK = 30000; // 30 segundos
+    const INTERVALO_CHECK = 30000;
 
     if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
         Notification.requestPermission();
@@ -71,11 +69,10 @@
             if (ultimoNotificado !== idActual) {
                 localStorage.setItem('ultima_incidencia_notificada', idActual);
                 
-                // Extraer el valor de Organization (columna 2) y el Título (columna 9)
+                // Mapeo exacto según tu tabla
                 const organizacion = celdas[1]?.innerText.trim() || 'Organización no especificada';
-                const titulo = celdas[8]?.innerText.trim() || 'Sin título';
+                const titulo = celdas[9]?.innerText.trim() || 'Sin título';
                 
-                // Lanza la notificación solo con Organización y Título
                 lanzarNotificacion(organizacion, titulo);
             }
         }
